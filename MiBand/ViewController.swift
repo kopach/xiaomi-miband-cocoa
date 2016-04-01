@@ -50,14 +50,14 @@ class ViewController: NSViewController, CBCentralManagerDelegate, CBPeripheralDe
     func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber)
     {
         
-        //println("Discovered: " + peripheral.name)
-        if(peripheral.name == "MI") {
-            stepsView.stringValue = "Connecting to MI"
+        print("Discovered: " + peripheral.name!)
+        if(peripheral.name == "MI" || peripheral.name == "MI1S") {
+            stepsView.stringValue = "Connecting to MI1S"
             self.connectingPeripheral = peripheral
             centralManager.stopScan()
             self.centralManager.connectPeripheral(peripheral, options: nil)
         } else {
-            print("skipped " + peripheral.name!, terminator: "" )
+            print("skipped " + peripheral.name!, terminator: "\r\n" )
         }
         
     }
@@ -103,7 +103,7 @@ class ViewController: NSViewController, CBCentralManagerDelegate, CBPeripheralDe
     
     func peripheral(peripheral: CBPeripheral, didDiscoverServices error: NSError?)
     {
-        print("peripherial services", terminator: "")
+        print("peripherial services", terminator: "\r\n")
         if let servicePeripherals = peripheral.services as [CBService]!
         {
             for servicePeripheral in servicePeripherals
@@ -127,7 +127,7 @@ class ViewController: NSViewController, CBCentralManagerDelegate, CBPeripheralDe
             {
                 peripheral.setNotifyValue(true, forCharacteristic: cc)
                 
-                if cc.UUID.UUIDString == "FF0F"{
+                if cc.UUID.UUIDString == "FF0F" {
                     output("Characteristic", data: cc)
                     let data: NSData = "2".dataUsingEncoding(NSUTF8StringEncoding)!
                     peripheral.writeValue(data, forCharacteristic: cc, type: CBCharacteristicWriteType.WithoutResponse)
@@ -159,11 +159,10 @@ class ViewController: NSViewController, CBCentralManagerDelegate, CBPeripheralDe
             batteryView.stringValue = ("\(u16) % charged")
         }
         
-        
     }
     
     func output(description: String, data: AnyObject){
-        print("\(description): \(data)", terminator: "")
+        print("\(description): \(data)", terminator: "\r\n")
        // textField.text = textField.text + "\(description): \(data)\n"
     }
     
