@@ -138,7 +138,20 @@ class ViewController: NSViewController, CBCentralManagerDelegate, CBPeripheralDe
                 } else if cc.UUID.UUIDString == "FF0C" {
                     print("READING BATTERY")
                     peripheral.readValueForCharacteristic(cc)
-                }
+                // From branch Mi Alpha
+                } else if cc.UUID.UUIDString == "FF05" {
+                    let data: NSData = "8, 2".dataUsingEncoding(NSUTF8StringEncoding)!
+                    peripheral.writeValue(data, forCharacteristic: cc, type: CBCharacteristicWriteType.WithResponse)
+                    output("Characteristic", data: cc)
+                    
+                    dispatch_after(10, dispatch_get_main_queue(), { () -> Void in
+                        let data: NSData = "19".dataUsingEncoding(NSUTF8StringEncoding)!
+                        peripheral.writeValue(data, forCharacteristic: cc, type: CBCharacteristicWriteType.WithResponse)
+                        self.output("Characteristic", data: cc)
+                    })
+                } else if cc.UUID.UUIDString == "2A37" {
+                    peripheral.readValueForCharacteristic(cc)
+                }		                  }
             }
             
         }
